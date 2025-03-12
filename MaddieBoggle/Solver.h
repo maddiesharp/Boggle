@@ -217,7 +217,7 @@ public:
 			
 			for (const auto& node : validNodes)
 			{
-				findWords(row, col);
+				findWords(node.first, node.second);
 			}
 
 			if (m_dictionary->searchWord(m_currentWord))

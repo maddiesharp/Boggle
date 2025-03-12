@@ -91,9 +91,9 @@ int importBoard(const string& filepath, vector<vector<char>>& board)
         string line{};
         while (getline(file, line)) // import line of chars
         {
+            vector<char> tempVec{};
             for (const auto& c : line)
             {
-                vector<char> tempVec{};
 
                 // only add letters 'A'-'Z' and 'a'-'z'
                 const auto lowerC{ static_cast<char>(tolower(c)) };
@@ -101,12 +101,12 @@ int importBoard(const string& filepath, vector<vector<char>>& board)
                 {
                     tempVec.push_back(lowerC);
                 }
+            }
 
-                // ignore empty lines
-                if (!tempVec.empty())
-                {
-                    board.push_back(tempVec);
-                }
+            // ignore empty lines
+            if (!tempVec.empty())
+            {
+                board.push_back(tempVec);
             }
         }
 
@@ -165,6 +165,7 @@ int main(const int argc, const char* const argv[])
 
         // -------------------------------------------------------
         Solver solver{ threadSafeDictionary, board };
+        solver.findWords(2, 2);
 
 
         cout << "maddie break\n";
