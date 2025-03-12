@@ -137,7 +137,7 @@ int main(const int argc, const char* const argv[])
 
     // extra scoping to see obj destructor logs before program end
     { 
-        // -------------------------------------------------------
+        // IMPORT DICTIONARY -------------------------------------------------------
 #ifdef _DEBUG
         auto startTime{ chrono::high_resolution_clock::now() };
 #endif
@@ -155,7 +155,7 @@ int main(const int argc, const char* const argv[])
         auto importTrieEndTime{ chrono::high_resolution_clock::now() };
 #endif
 
-        // -------------------------------------------------------
+        // IMPORT BOARD ------------------------------------------------------------
         vector<vector<char>>board{};
         errCode = importBoard(boardPath, board);
         if (errCode > 0)
@@ -163,7 +163,11 @@ int main(const int argc, const char* const argv[])
             return errCode;
         }
 
-        // -------------------------------------------------------
+#ifdef _DEBUG
+        auto solverStartTime{ chrono::high_resolution_clock::now() };
+#endif
+
+        // SOLVE BOARD -------------------------------------------------------------
         Solver solver{ threadSafeDictionary, board };
         solver.findWords(0, 0);
         solver.findWords(0, 1);
@@ -182,17 +186,23 @@ int main(const int argc, const char* const argv[])
         solver.findWords(3, 2);
         solver.findWords(3, 3);
 
+        // EXPORT SORTED ANSWERS ---------------------------------------------------
 
 
-        cout << "maddie break\n";
 
+#ifdef _DEBUG
+        auto endTime{ chrono::high_resolution_clock::now() };
+        cout << "metrics: \n";
+        cout << "\tTrie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
+        cout << "\tSolver Time: " << (endTime - solverStartTime).count() / 1000000.0f << "ms\n";
+        cout << "\tTotal Time: " << (endTime - startTime).count() / 1000000.0f << "ms\n";
+#endif
     }
     // end extra scoping
 
 
 #ifdef _DEBUG
-    cout << "metrics:\n\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
-    //cout << "\tTrie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
+    cout << "\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
 #endif
 
     return 0;
