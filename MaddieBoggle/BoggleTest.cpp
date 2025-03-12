@@ -66,17 +66,56 @@
 //  This test file is confidential. No part of this document may be disclosed publicly 
 //  without prior written consent from ZeniMax Media, Inc.
 
+#include <chrono>
 #include <iostream>
+#include <memory>
 
-//int main(const int argc, const char* const argv[])
-//{
-//	if (argc != 4)
-//	{
-//		std::cerr << "Usage: BoggleTest <dictionary_filename> <board_filename> <output_filename>" << std::endl;
-//		return -1;
-//	}
-//
-//	
-//	return 0;
-//}
+
+#include "WordTrie.h"
+
+
+using namespace std;
+
+
+int main(const int argc, const char* const argv[])
+{
+
+    if (argc != 4)
+    {
+        std::cerr << "Usage: BoggleTest <dictionary_filename> <board_filename> <output_filename>" << std::endl;
+        return -1;
+    }
+
+    const string dictionaryPath { argv[1] };
+    const string boardPath      { argv[2] };
+    const string outputPath     { argv[3] };
+
+
+    // extra scoping to see obj destructor logs before program end
+    { 
+        auto startTime{ chrono::high_resolution_clock::now() };
+
+        auto tempDictionary{ make_unique<WordTrie>() };
+        int errCode{ tempDictionary->importDictionary(dictionaryPath) };
+        if (errCode > 0)
+        {
+            return errCode;
+        }
+        shared_ptr<const WordTrie> safeDictionary{ std::move(tempDictionary) };
+
+        auto importTrieEndTime{ chrono::high_resolution_clock::now() };
+        cout << "Trie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
+
+
+    }
+    // end extra scoping
+
+#ifdef _DEBUG
+    cout << "maddie boggle\n";
+    cout << "metrics:\n\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
+
+#endif
+
+	return 0;
+}
 

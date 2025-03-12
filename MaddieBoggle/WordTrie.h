@@ -97,7 +97,7 @@ public:
             currentNode = currentNode->m_childLetters[letter];
         }
 
-        // we made it to the last letter, is this path a valid word?
+        // we made it to the last letter, return valid word to confirm/deny path is valid
         return currentNode->m_isWordValid;
     }
 
@@ -109,7 +109,7 @@ public:
             ifstream file(filePath);
             if (!file)
             {
-                cerr << "Error finding file at path: " << filePath << ". Trie is empty!\n";
+                cerr << "Error finding file at path: " << filePath << ".\n";
                 return 1;
             }
 
@@ -120,15 +120,15 @@ public:
             }
 
             file.close();
+
+            cout << "Imported word count: " << m_wordCount << "\n";
+            return 0;
         }
         catch (...)
         {
             cerr << "Unexpected error when importing file!\n";
             return 2;
         }
-
-        cout << "Imported word count: " << m_wordCount << "\n";
-        return 0;
     }
 
 

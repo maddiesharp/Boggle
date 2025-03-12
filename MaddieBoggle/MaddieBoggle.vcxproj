@@ -132,7 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MaddieBoggle.cpp" />
+    <ClCompile Include="BoggleTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WordTrie.h" />
