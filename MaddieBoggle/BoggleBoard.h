@@ -172,9 +172,19 @@ using namespace std;
 //	
 //};
 
+struct PairHash 
+{
+    std::size_t operator()(const std::pair<size_t, size_t>& p) const 
+    {
+        return std::hash<size_t>()(p.first) ^ (std::hash<size_t>()(p.second) << 1);
+    }
+};
+
 
 class BoggleBoard
 {
+    using BoardNodes = unordered_set<pair<size_t, size_t>, PairHash>;
+
 public:
     BoggleBoard(unique_ptr<const WordTrie> dictionary) : 
         m_dictionary(move(dictionary)),
@@ -186,6 +196,7 @@ public:
         assert(m_dictionary);
     }
 
+
     void findWords(size_t row, size_t col)
 	{
 		//m_currentWord.push_back(m_board[index]); // update current word to include this node into the path
@@ -195,7 +206,7 @@ public:
 		{
 			//m_visitedNodes.insert(index);
 
-			unordered_set<size_t> validNodes{};
+            BoardNodes validNodes{};
 			//checkNodeUp(index, validNodes, m_visitedNodes);
 			//checkNodeUpRight(index, validNodes, m_visitedNodes);
 			//checkNodeRight(index, validNodes, m_visitedNodes);
