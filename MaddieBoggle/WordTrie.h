@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 
+
 using namespace std;
 
 
@@ -56,6 +57,7 @@ public:
 
     void insertWord(const string& word)
     {
+        assert(m_root);
         assert(word.size() > 0);
 
         // skip duplicate words OR words that are too small
@@ -80,8 +82,9 @@ public:
     }
 
 
-    bool searchWord(const string& word)
+    bool searchWord(const string& word) const
     {
+        assert(m_root);
         assert(word.size() > 0);
 
         auto currentNode{ m_root };
@@ -102,14 +105,36 @@ public:
     }
 
 
-    int importDictionary(const string& filePath)
+    bool findPrefix(const string& prefix) const
+    {
+        assert(m_root);
+        assert(prefix.size() > 0);
+
+        auto currentNode{ m_root };
+        for (const auto& letter : prefix)
+        {
+            // if letter could not be found, then we know that some part of the prefix doesn't exist
+            if (currentNode->m_childLetters.find(letter) == currentNode->m_childLetters.end())
+            {
+                return false;
+            }
+
+            // move into next node to check for any matching letters
+            currentNode = currentNode->m_childLetters[letter];
+        }
+
+        return true;
+    }
+
+
+    int importDictionary(const string& filepath)
     {
         try
         {
-            ifstream file(filePath);
+            ifstream file(filepath);
             if (!file)
             {
-                cerr << "Error finding file at path: " << filePath << ".\n";
+                cerr << "Error finding file at path: " << filepath << ".\n";
                 return 1;
             }
 
@@ -126,7 +151,7 @@ public:
         }
         catch (...)
         {
-            cerr << "Unexpected error when importing file!\n";
+            cerr << "Unexpected error when importing dictionary file!\n";
             return 2;
         }
     }

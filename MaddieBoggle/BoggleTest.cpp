@@ -70,7 +70,7 @@
 #include <iostream>
 #include <memory>
 
-
+#include "BoggleBoard.h"
 #include "WordTrie.h"
 
 
@@ -93,29 +93,47 @@ int main(const int argc, const char* const argv[])
 
     // extra scoping to see obj destructor logs before program end
     { 
+        // -------------------------------------------------------
+#ifdef _DEBUG
         auto startTime{ chrono::high_resolution_clock::now() };
+#endif
 
         auto tempDictionary{ make_unique<WordTrie>() };
-        int errCode{ tempDictionary->importDictionary(dictionaryPath) };
+        auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
         if (errCode > 0)
         {
             return errCode;
         }
-        shared_ptr<const WordTrie> safeDictionary{ std::move(tempDictionary) };
+        unique_ptr<const WordTrie> safeDictionary{ move(tempDictionary) };
 
+
+#ifdef _DEBUG
         auto importTrieEndTime{ chrono::high_resolution_clock::now() };
-        cout << "Trie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
+#endif
 
+        // -------------------------------------------------------
+        auto tempBoard{ make_unique<BoggleBoard>(move(safeDictionary)) };
+        errCode = tempBoard->importBoard(boardPath);
+        if (errCode > 0)
+        {
+            return errCode;
+        }
+        shared_ptr<const BoggleBoard> safeBoard{ move(tempBoard) };
+
+        // -------------------------------------------------------
+
+
+        cout << "maddie break\n";
 
     }
     // end extra scoping
 
-#ifdef _DEBUG
-    cout << "maddie boggle\n";
-    cout << "metrics:\n\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
 
+#ifdef _DEBUG
+    cout << "metrics:\n\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
+    //cout << "\tTrie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
 #endif
 
-	return 0;
+    return 0;
 }
 
