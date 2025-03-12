@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -181,14 +180,14 @@ struct PairHash
 };
 
 
-class BoggleBoard
+class Solver
 {
     using BoardNodes = unordered_set<pair<size_t, size_t>, PairHash>;
 
 public:
-    BoggleBoard(unique_ptr<const WordTrie> dictionary) : 
-        m_dictionary(move(dictionary)),
-        m_board(),
+    Solver(shared_ptr<const WordTrie> dictionary, const vector<vector<char>>& board) :
+        m_dictionary(dictionary),
+        m_board(board),
 		m_visitedNodes(),
 		m_answers(),
 		m_currentWord("")
@@ -199,15 +198,15 @@ public:
 
     void findWords(size_t row, size_t col)
 	{
-		//m_currentWord.push_back(m_board[index]); // update current word to include this node into the path
+		m_currentWord.push_back(m_board[row][col]); // update current word to include this node into the path
 
 		// if the current word + this node is a valid dictionary path
 		if (m_dictionary->findPrefix(m_currentWord))
 		{
-			//m_visitedNodes.insert(index);
+            m_visitedNodes.insert({ row, col });
 
             BoardNodes validNodes{};
-			//checkNodeUp(index, validNodes, m_visitedNodes);
+			checkNodeUp(row, col, validNodes);
 			//checkNodeUpRight(index, validNodes, m_visitedNodes);
 			//checkNodeRight(index, validNodes, m_visitedNodes);
 			//checkNodeDownRight(index, validNodes, m_visitedNodes);
@@ -218,7 +217,7 @@ public:
 			
 			for (const auto& node : validNodes)
 			{
-				//findWords(node);
+				findWords(row, col);
 			}
 
 			if (m_dictionary->searchWord(m_currentWord))
@@ -226,7 +225,7 @@ public:
 				m_answers.insert(m_currentWord);
 			}
 
-			//m_visitedNodes.erase(index); // done erase node and allow return to recursive callee
+            m_visitedNodes.erase({ row, col }); // done erase node and allow return to recursive callee
 			m_currentWord.pop_back(); // we are returning, so remove the current char from this node
 		}
 		else
@@ -236,53 +235,31 @@ public:
 	}
 
 
-    int importBoard(const string& filepath)
-    {
-        try
-        {
-            ifstream file(filepath);
-            if (!file)
-            {
-                cerr << "Error finding file at path: " << filepath << ".\n";
-                return 1;
-            }
 
-            string line{};
-            while (getline(file, line)) // import line of chars
-            {
-                for (const auto& c : line)
-                {
-                    vector<char> tempVec{};
-
-                    const auto lowerC{ static_cast<char>(tolower(c)) };
-                    if ((lowerC >= 'a') && (lowerC <= 'z'))
-                    {
-                        tempVec.push_back(lowerC);
-                    }
-
-                    if (!tempVec.empty())
-                    {
-                        m_board.push_back(tempVec);
-                    }
-                }
-            }
-
-            file.close();
-            return 0;
-        }
-        catch (...)
-        {
-            cerr << "Unexpected error when importing board file!\n";
-            return 2;
-        }
-    }
 
 private:
-    unique_ptr<const WordTrie> m_dictionary;
-    vector<vector<char>> m_board;
-	unordered_set<size_t> m_visitedNodes;
+    shared_ptr<const WordTrie> m_dictionary;
+    const vector<vector<char>>& m_board;
+    BoardNodes m_visitedNodes;
 	unordered_set<string> m_answers;
 	string m_currentWord;
+
+    inline void checkNodeUp(size_t& row, size_t& col, BoardNodes& validNodes)
+    {
+        const int newRow{ (int)row - 1 };
+
+        if (newRow >= 0) // (literal edge case) if not on the top edge of the board
+        {
+            if (m_board[newRow].size() > col) // (edgier case) if the above index even exists
+            {
+                auto temp{ make_pair(size_t(newRow), col) };
+                if (m_visitedNodes.find(temp) == m_visitedNodes.end()) // index hasn't already been visited
+                {
+                    validNodes.insert(temp);
+                }
+            }
+        }
+    }
 };
 
 

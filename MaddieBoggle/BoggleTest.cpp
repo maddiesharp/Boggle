@@ -70,11 +70,55 @@
 #include <iostream>
 #include <memory>
 
-#include "BoggleBoard.h"
+#include "Solver.h"
 #include "WordTrie.h"
 
 
 using namespace std;
+
+
+int importBoard(const string& filepath, vector<vector<char>>& board)
+{
+    try
+    {
+        ifstream file(filepath);
+        if (!file)
+        {
+            cerr << "Error finding file at path: " << filepath << ".\n";
+            return 1;
+        }
+
+        string line{};
+        while (getline(file, line)) // import line of chars
+        {
+            for (const auto& c : line)
+            {
+                vector<char> tempVec{};
+
+                // only add letters 'A'-'Z' and 'a'-'z'
+                const auto lowerC{ static_cast<char>(tolower(c)) };
+                if ((lowerC >= 'a') && (lowerC <= 'z'))
+                {
+                    tempVec.push_back(lowerC);
+                }
+
+                // ignore empty lines
+                if (!tempVec.empty())
+                {
+                    board.push_back(tempVec);
+                }
+            }
+        }
+
+        file.close();
+        return 0;
+    }
+    catch (...)
+    {
+        cerr << "Unexpected error when importing board file!\n";
+        return 2;
+    }
+}
 
 
 int main(const int argc, const char* const argv[])
@@ -104,7 +148,7 @@ int main(const int argc, const char* const argv[])
         {
             return errCode;
         }
-        unique_ptr<const WordTrie> safeDictionary{ move(tempDictionary) };
+        shared_ptr<const WordTrie> threadSafeDictionary{ move(tempDictionary) };
 
 
 #ifdef _DEBUG
@@ -112,15 +156,15 @@ int main(const int argc, const char* const argv[])
 #endif
 
         // -------------------------------------------------------
-        auto tempBoard{ make_unique<BoggleBoard>(move(safeDictionary)) };
-        errCode = tempBoard->importBoard(boardPath);
+        vector<vector<char>>board{};
+        errCode = importBoard(boardPath, board);
         if (errCode > 0)
         {
             return errCode;
         }
-        shared_ptr<const BoggleBoard> safeBoard{ move(tempBoard) };
 
         // -------------------------------------------------------
+        Solver solver{ threadSafeDictionary, board };
 
 
         cout << "maddie break\n";
