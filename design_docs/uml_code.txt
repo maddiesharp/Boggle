@@ -1,0 +1,75 @@
+@startuml
+
+struct LetterNode {
++LetterNode()
++LetterNode* findChild(char letter)
++void insertChild(char letter, LetterNode* child)
++vector<pair<char, LetterNode*>> m_childLetters
++bool m_isWordValid
+}
+
+
+class LetterNodePool {
++LetterNodePool(size_t poolSize)
++LetterNode* allocate()
++void deallocate(LetterNode* node)
+#vector<LetterNode> m_pool
+#vector<LetterNode*> m_freeNodes
+}
+
+
+class ThreadPool {
++ThreadPool(size_t threadCount)
++\~ThreadPool()
++void queueTask<function<void()> task>
++void waitForCompletion()
+-vector<thread> m_pool
+-queue<function<void>> m_tasks
+-mutex m_mutex
+-conditional_variable m_taskPresent
+-conditional_variable m_complete
+-bool m_stop
+-atomic<size_t> m_activeTasks
+-void workerThread()
+}
+
+
+enum ErrorCode{
+}
+
+enum SearchType{
+}
+
+class Dictionary{
++Dictionary(size_t poolSize)
++ErrorCode importDictionary(const string& filepath)
++ErrorCode insertWord(const string& word)
++bool searchDictionary(const string& word, SearchType type)
+#LetterNode* m_root
+#LetterNodePool m_pool
+-size_t m_wordCount
+}
+
+LetterNodePool *-u- LetterNode
+Dictionary *-u- LetterNodePool
+
+class BoggleSolver {
++BoggleSolver(shared_ptr<const Dictionary> dictionary,
+shared_ptr<ThreadPool> pool,const vector<vector<char>>& board)
++void solverBoard()
++void exportAnswers()
+#set<string> m_answers
+#void findWordsAtIndex(size_t row, size_t col)
+-const vector<vector<<char>>& m_board
+-shared_ptr<const Dictionary> m_dictionary
+-shared_ptr<ThreadPool> m_pool
+-mutex m_answersMutex
+}
+
+Dictionary -r-o BoggleSolver
+Dictionary -l[hidden]- ErrorCode
+Dictionary -l[hidden]- SearchType
+
+BoggleSolver o-r- ThreadPool
+
+@enduml
