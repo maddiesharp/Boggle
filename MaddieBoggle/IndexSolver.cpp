@@ -11,7 +11,12 @@
 #include "IndexSolverHelper.h"
 
 
-IndexSolver::IndexSolver(shared_ptr<const Dictionary> dictionary, const vector<vector<char>>& board) :
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dictionary"></param>
+/// <param name="board"></param>
+IndexSolver::IndexSolver(shared_ptr<const Dictionary> dictionary, const BoggleBoard& board) :
     m_board(board),
     m_dictionary(dictionary),
     m_visitedNodes(),
@@ -22,6 +27,11 @@ IndexSolver::IndexSolver(shared_ptr<const Dictionary> dictionary, const vector<v
 }
 
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="row"></param>
+/// <param name="col"></param>
 void IndexSolver::findWords(size_t row, size_t col)
 {
     bool qCondition { false };              // Flag used to identify if a the Q_CONDITION is active.

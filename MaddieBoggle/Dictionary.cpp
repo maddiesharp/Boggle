@@ -11,6 +11,9 @@
 #include "Dictionary.h"
 
 
+/// <summary>
+/// 
+/// </summary>
 Dictionary::Dictionary() :
 	m_wordCount(0)
 {
@@ -18,12 +21,19 @@ Dictionary::Dictionary() :
 }
 
 
+/// <summary>
+/// 
+/// </summary>
 Dictionary::~Dictionary()
 {
 	delete m_root; // begins the destruction of all child nodes
 }
 
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="word"></param>
 void Dictionary::insertWord(const string& word)
 {
     assert(m_root);
@@ -54,6 +64,11 @@ void Dictionary::insertWord(const string& word)
 }
 
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="word"></param>
+/// <returns></returns>
 bool Dictionary::searchWord(const string& word) const
 {
     assert(m_root);
@@ -79,6 +94,11 @@ bool Dictionary::searchWord(const string& word) const
 }
 
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="prefix"></param>
+/// <returns></returns>
 bool Dictionary::findPrefix(const string& prefix) const
 {
     assert(m_root);
@@ -103,6 +123,11 @@ bool Dictionary::findPrefix(const string& prefix) const
 }
 
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="filepath"></param>
+/// <returns></returns>
 int Dictionary::importDictionary(const string& filepath)
 {
     try

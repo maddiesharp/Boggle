@@ -19,7 +19,9 @@ static size_t killCount = 0;
 #endif
 
 
-/**/
+/// <summary>
+/// 
+/// </summary>
 struct LetterNode
 {
 #ifdef _DEBUG
@@ -42,7 +44,9 @@ struct LetterNode
 };
 
 
-/**/
+/// <summary>
+/// 
+/// </summary>
 class Dictionary
 {
 public:

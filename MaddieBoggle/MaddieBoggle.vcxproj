@@ -137,6 +137,7 @@
     <ClCompile Include="IndexSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoggleBoard.h" />
     <ClInclude Include="IndexSolverHelper.h" />
     <ClInclude Include="IndexSolver.h" />
     <ClInclude Include="Dictionary.h" />

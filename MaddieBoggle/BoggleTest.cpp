@@ -71,6 +71,7 @@
 #include <iostream>
 #include <memory>
 
+#include "BoggleBoard.h"
 #include "Dictionary.h"
 #include "IndexSolver.h"
 
@@ -79,49 +80,6 @@
 
 using namespace std;
 
-
-int importBoard(const string& filepath, vector<vector<char>>& board)
-{
-    try
-    {
-        ifstream file(filepath);
-        if (!file)
-        {
-            cerr << "Error finding file at path: " << filepath << ".\n";
-            return 1;
-        }
-
-        string line{};
-        while (getline(file, line)) // import line of chars
-        {
-            vector<char> tempVec{};
-            for (const auto& c : line)
-            {
-
-                // only add letters 'A'-'Z' and 'a'-'z'
-                const auto lowerC{ static_cast<char>(tolower(c)) };
-                if ((lowerC >= 'a') && (lowerC <= 'z'))
-                {
-                    tempVec.push_back(lowerC);
-                }
-            }
-
-            // ignore empty lines
-            if (!tempVec.empty())
-            {
-                board.push_back(tempVec);
-            }
-        }
-
-        file.close();
-        return 0;
-    }
-    catch (...)
-    {
-        cerr << "Unexpected error when importing board file!\n";
-        return 2;
-    }
-}
 
 
 int main(const int argc, const char* const argv[])
@@ -159,7 +117,7 @@ int main(const int argc, const char* const argv[])
 #endif
 
         // IMPORT BOARD ------------------------------------------------------------
-        vector<vector<char>>board{};
+        BoggleBoard board{};
         errCode = importBoard(boardPath, board);
         if (errCode > 0)
         {

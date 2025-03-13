@@ -10,17 +10,23 @@
 #include <unordered_set>
 #include <vector>
 
+#include "BoggleBoard.h"
 #include "Dictionary.h"
 
 
 using namespace std;
 
 
-/**/
+/// <summary>
+/// The IndexSolver class is built to solve all the words that can be made
+/// from a given started character node on the boggle board
+/// 
+/// TODO mode info
+/// </summary>
 class IndexSolver
 {
 public:
-    IndexSolver(shared_ptr<const Dictionary> dictionary, const vector<vector<char>>& board);
+    IndexSolver(shared_ptr<const Dictionary> dictionary, const BoggleBoard& board);
 
     void findWords(size_t row, size_t col);
 
@@ -33,7 +39,7 @@ public:
     using BoardNodes = unordered_set<pair<size_t, size_t>, PairHash>;
 
 private:
-    const vector<vector<char>>& m_board;
+    const BoggleBoard& m_board; // using BoggleBoard = vector<vector<char>>
     shared_ptr<const Dictionary> m_dictionary;
     
     string m_currentWord;
