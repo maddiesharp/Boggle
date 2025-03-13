@@ -27,6 +27,9 @@ Dictionary::Dictionary() :
 Dictionary::~Dictionary()
 {
 	delete m_root; // begins the destruction of all child nodes
+#ifdef _DEBUG
+    cout << "\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
+#endif
 }
 
 

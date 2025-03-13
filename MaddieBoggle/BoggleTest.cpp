@@ -81,7 +81,6 @@
 using namespace std;
 
 
-
 int main(const int argc, const char* const argv[])
 {
 
@@ -162,9 +161,7 @@ int main(const int argc, const char* const argv[])
     // end extra scoping
 
 
-#ifdef _DEBUG
-    cout << "\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
-#endif
+
 
     return 0;
 }
