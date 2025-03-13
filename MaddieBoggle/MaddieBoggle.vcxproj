@@ -133,10 +133,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoggleTest.cpp" />
+    <ClCompile Include="Dictionary.cpp" />
+    <ClCompile Include="IndexSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Solver.h" />
-    <ClInclude Include="WordTrie.h" />
+    <ClInclude Include="IndexSolverHelper.h" />
+    <ClInclude Include="IndexSolver.h" />
+    <ClInclude Include="Dictionary.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

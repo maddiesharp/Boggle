@@ -67,11 +67,14 @@
 //  without prior written consent from ZeniMax Media, Inc.
 
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <memory>
 
-#include "Solver.h"
-#include "WordTrie.h"
+#include "Dictionary.h"
+#include "IndexSolver.h"
+
+#define METRICS
 
 
 using namespace std;
@@ -138,20 +141,20 @@ int main(const int argc, const char* const argv[])
     // extra scoping to see obj destructor logs before program end
     { 
         // IMPORT DICTIONARY -------------------------------------------------------
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(METRICS)
         auto startTime{ chrono::high_resolution_clock::now() };
 #endif
 
-        auto tempDictionary{ make_unique<WordTrie>() };
+        auto tempDictionary{ make_unique<Dictionary>() };
         auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
         if (errCode > 0)
         {
             return errCode;
         }
-        shared_ptr<const WordTrie> threadSafeDictionary{ move(tempDictionary) };
+        shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
 
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(METRICS)
         auto importTrieEndTime{ chrono::high_resolution_clock::now() };
 #endif
 
@@ -163,12 +166,12 @@ int main(const int argc, const char* const argv[])
             return errCode;
         }
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(METRICS)
         auto solverStartTime{ chrono::high_resolution_clock::now() };
 #endif
 
         // SOLVE BOARD -------------------------------------------------------------
-        Solver solver{ threadSafeDictionary, board };
+        IndexSolver solver{ threadSafeDictionary, board };
         solver.findWords(0, 0);
         solver.findWords(0, 1);
         solver.findWords(0, 2);
@@ -190,7 +193,7 @@ int main(const int argc, const char* const argv[])
 
 
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(METRICS)
         auto endTime{ chrono::high_resolution_clock::now() };
         cout << "metrics: \n";
         cout << "\tTrie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
