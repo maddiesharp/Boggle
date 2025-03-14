@@ -80,7 +80,7 @@
 
 
 using namespace std;
-
+constexpr size_t MAX_NUM_POOL_THREADS{ 4 };
 
 int main(const int argc, const char* const argv[])
 {
@@ -100,8 +100,7 @@ int main(const int argc, const char* const argv[])
     auto startTime{ chrono::high_resolution_clock::now() };
 #endif
 
-    constexpr size_t MAX_NUM_THREADS{ 4 };
-    auto threadPool{ make_shared<ThreadPool>(MAX_NUM_THREADS) };
+    auto threadPool{ make_shared<ThreadPool>(MAX_NUM_POOL_THREADS) };
 
 
     // IMPORT DICTIONARY -------------------------------------------------------
@@ -146,11 +145,11 @@ int main(const int argc, const char* const argv[])
     // -------------------------------------------------------------------------
 #if defined(_DEBUG) || defined(METRICS)
     auto endTime{ chrono::high_resolution_clock::now() };
-    cout << "metrics: \n";
-    cout << /*"\tThread Pool Time: "  <<*/ (importDictionaryTime - startTime).count()           / 1000000.0f <</* "ms*/"\n";
-    cout << /*"\tTrie Import Time: "  <<*/ (importTrieEndTime - importDictionaryTime).count()   / 1000000.0f <</* "ms*/"\n";
-    cout << /*"\tSolver Time: "       <<*/ (endTime - solverStartTime).count()                  / 1000000.0f <</* "ms*/"\n";
-    cout << /*"\tTotal Time: "        <<*/ (endTime - startTime).count()                        / 1000000.0f <</* "ms*/"\n";
+    cout << "metrics (ms): \n";
+    cout << "\tThread Pool Time\t: "    << (importDictionaryTime - startTime).count()           / 1000000.0f << "\n";
+    cout << "\tTrie Import Time\t: "    << (importTrieEndTime - importDictionaryTime).count()   / 1000000.0f << "\n";
+    cout << "\tSolver Time\t\t: "       << (endTime - solverStartTime).count()                  / 1000000.0f << "\n";
+    cout << "\tTotal Time\t\t: "        << (endTime - startTime).count()                        / 1000000.0f << "\n";
 #endif
 
     return 0;
