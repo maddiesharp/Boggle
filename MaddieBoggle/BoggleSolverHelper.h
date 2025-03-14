@@ -2,10 +2,10 @@
 // Place Holder Copyright Header
 //
 
-#ifndef INDEX_SOLVER_HELPER_H
-#define INDEX_SOLVER_HELPER_H
+#ifndef BOGGLE_SOLVER_HELPER_H
+#define BOGGLE_SOLVER_HELPER_H
 
-#include "IndexSolver.h"
+#include "BoggleSolver.h"
 
 
 using namespace std;
@@ -54,7 +54,7 @@ using namespace std;
 /// <param name="board">reference to the full board of boggle characters</param>
 /// <param name="validNodes">reference to a set where a valid node can be stored, if found</param>
 /// <param name="visitedNodes">reference to a set of node characters already in the path, used to check node validity</param>
-inline void checkNodeUp(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeUp(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newRow{ (int)row - 1 };
 
@@ -76,7 +76,7 @@ inline void checkNodeUp(size_t& row, size_t& col, const BoggleBoard& board, Inde
 /// See Theory of Operation above for more details.
 /// NOTE - ORDER OF IF BLOCKS MATTERS
 /// </summary>
-inline void checkNodeUpRight(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeUpRight(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newRow{ (int)row - 1 };
     const int newCol{ (int)col + 1 };
@@ -99,7 +99,7 @@ inline void checkNodeUpRight(size_t& row, size_t& col, const BoggleBoard& board,
 /// See Theory of Operation above for more details.
 /// NOTE - ORDER OF IF BLOCKS MATTERS
 /// </summary>
-inline void checkNodeRight(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeRight(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newCol{ (int)col + 1 };
 
@@ -118,7 +118,7 @@ inline void checkNodeRight(size_t& row, size_t& col, const BoggleBoard& board, I
 /// See Theory of Operation above for more details.
 /// NOTE - ORDER OF IF BLOCKS MATTERS
 /// </summary>
-inline void checkNodeUpLeft(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeUpLeft(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newRow{ (int)row - 1 };
     const int newCol{ (int)col - 1 };
@@ -141,7 +141,7 @@ inline void checkNodeUpLeft(size_t& row, size_t& col, const BoggleBoard& board, 
 /// See Theory of Operation above for more details.
 /// NOTE - ORDER OF IF BLOCKS MATTERS
 /// </summary>
-inline void checkNodeDown(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeDown(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newRow{ (int)row + 1 };
 
@@ -163,7 +163,7 @@ inline void checkNodeDown(size_t& row, size_t& col, const BoggleBoard& board, In
 /// See Theory of Operation above for more details.
 /// NOTE - ORDER OF IF BLOCKS MATTERS
 /// </summary>
-inline void checkNodeDownRight(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeDownRight(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newRow{ (int)row + 1 };
     const int newCol{ (int)col + 1 };
@@ -186,7 +186,7 @@ inline void checkNodeDownRight(size_t& row, size_t& col, const BoggleBoard& boar
 /// See Theory of Operation above for more details.
 /// NOTE - ORDER OF IF BLOCKS MATTERS
 /// </summary>
-inline void checkNodeDownLeft(size_t& row, size_t& col, const BoggleBoard& board, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeDownLeft(size_t& row, size_t& col, const BoggleBoard& board, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newRow{ (int)row + 1 };
     const int newCol{ (int)col - 1 };
@@ -211,7 +211,7 @@ inline void checkNodeDownLeft(size_t& row, size_t& col, const BoggleBoard& board
 /// 
 /// This particular function does not need the const BoggleBoard&
 /// </summary>
-inline void checkNodeLeft(size_t& row, size_t& col, IndexSolver::BoardNodes& validNodes, IndexSolver::BoardNodes& visitedNodes)
+inline void checkNodeLeft(size_t& row, size_t& col, BoggleSolver::BoardNodes& validNodes, BoggleSolver::BoardNodes& visitedNodes)
 {
     const int newCol{ (int)col - 1 };
 
@@ -226,4 +226,4 @@ inline void checkNodeLeft(size_t& row, size_t& col, IndexSolver::BoardNodes& val
 }
 
 
-#endif // INDEX_SOLVER_HELPER_H
+#endif // BOGGLE_SOLVER_HELPER_H

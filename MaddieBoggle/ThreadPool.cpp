@@ -2,6 +2,7 @@
 // Place Holder Copyright Header
 //
 
+#include <algorithm>
 #include <cassert>
 
 #ifdef _DEBUG
@@ -25,10 +26,13 @@ ThreadPool::ThreadPool(size_t threadCount) :
     m_pool(),
     m_tasks(),
     m_queueMutex(),
-    m_cv(),
-    m_stop(false)
+    m_taskPresent(),
+    m_complete(),
+    m_stop(false),
+    m_activeTasks()
 {
     assert(threadCount > 0);
+    threadCount = min(threadCount, static_cast<size_t>(thread::hardware_concurrency()));
 
     #ifdef _DEBUG
         cout << "Thread pool size: " << threadCount << " threads.\n";
@@ -55,7 +59,7 @@ ThreadPool::~ThreadPool()
     }
 
     // notify all threads to stop and shut down
-    m_cv.notify_all();
+    m_taskPresent.notify_all();
 
     // wait for all threads in the pool to finish and close them
     for (auto& thread : m_pool)
@@ -73,13 +77,25 @@ ThreadPool::~ThreadPool()
 /// <param name="task">Lambda/function to execute</param>
 void ThreadPool::queueTask(function<void()> task)
 {
+    ++m_activeTasks; // new task will be available
+
     {
         lock_guard<mutex> lock(m_queueMutex);
         m_tasks.push(move(task));
     }
 
     // notify a single thread that a task is ready to be processed
-    m_cv.notify_one();
+    m_taskPresent.notify_one();
+}
+
+
+/// <summary>
+/// 
+/// </summary>
+void ThreadPool::waitForCompletion()
+{
+    std::unique_lock<std::mutex> lock(m_queueMutex);
+    m_complete.wait(lock, [this] { return m_activeTasks.load() == 0; });
 }
 
 
@@ -98,7 +114,7 @@ void ThreadPool::workerThread()
         {
             // attempt/wait for access to the tasks queue
             unique_lock<mutex> lock(m_queueMutex);
-            m_cv.wait(lock, [this] { return m_stop || !m_tasks.empty(); });
+            m_taskPresent.wait(lock, [this] { return m_stop || !m_tasks.empty(); });
 
             // if signalled to stop and tasks are empty, close this worker
             if(m_stop && m_tasks.empty()) return;
@@ -108,6 +124,11 @@ void ThreadPool::workerThread()
             m_tasks.pop();
         }
 
+//#ifdef _DEBUG
+//        cout << "Thread " << std::this_thread::get_id() << " started a task.\n";
+//#endif
         task();
+
+        if (--m_activeTasks == 0) m_complete.notify_one();
     }
 }

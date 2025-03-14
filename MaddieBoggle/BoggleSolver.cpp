@@ -7,8 +7,8 @@
 #include <iostream>
 #endif
 
-#include "IndexSolver.h"
-#include "IndexSolverHelper.h"
+#include "BoggleSolver.h"
+#include "BoggleSolverHelper.h"
 
 
 /// <summary>
@@ -16,14 +16,37 @@
 /// </summary>
 /// <param name="dictionary"></param>
 /// <param name="board"></param>
-IndexSolver::IndexSolver(shared_ptr<const Dictionary> dictionary, const BoggleBoard& board) :
+BoggleSolver::BoggleSolver(shared_ptr<const Dictionary> dictionary, shared_ptr<ThreadPool> pool, const BoggleBoard& board) :
     m_board(board),
     m_dictionary(dictionary),
-    m_visitedNodes(),
-    m_answers(),
-    m_currentWord("")
+    m_pool(pool),
+    m_answersMutex(),
+    m_answers()
 {
     assert(m_dictionary);
+    assert(m_pool);
+}
+
+
+/// <summary>
+/// 
+/// </summary>
+void BoggleSolver::solveBoard()
+{
+    size_t rowIndex{ 0 };
+    size_t colIndex{ 0 };
+    for (const auto& row : m_board)
+    {
+        colIndex = 0;
+        for (const auto& col : row)
+        {
+            m_pool->queueTask([this, rowIndex, colIndex]() {
+                this->findWordsAtIndex(rowIndex, colIndex);
+            });
+            colIndex++;
+        }
+        rowIndex++;
+    }
 }
 
 
@@ -32,8 +55,12 @@ IndexSolver::IndexSolver(shared_ptr<const Dictionary> dictionary, const BoggleBo
 /// </summary>
 /// <param name="row"></param>
 /// <param name="col"></param>
-void IndexSolver::findWords(size_t row, size_t col)
+void BoggleSolver::findWordsAtIndex(size_t row, size_t col)
 {
+    thread_local string m_currentWord;
+    //thread_local unordered_set<string> m_answers;
+    thread_local BoardNodes m_visitedNodes;
+
     bool qCondition { false };              // Flag used to identify if a the Q_CONDITION is active.
     auto currentChar{ m_board[row][col] };  // char at the current node on the Boggle board
 
@@ -71,7 +98,7 @@ void IndexSolver::findWords(size_t row, size_t col)
         // Go through all the valid nodes (if any) and recurse.
         for (const auto& node : validNodes)
         {
-            findWords(node.first, node.second); // !! RECURSIVE CALL !!
+            findWordsAtIndex(node.first, node.second); // !! RECURSIVE CALL !!
         }
 
         /* When we are done looking beyond the current node to any active nodes,
@@ -79,6 +106,7 @@ void IndexSolver::findWords(size_t row, size_t col)
         it is, add it to the set of answers. */
         if (m_dictionary->searchWord(m_currentWord))
         {
+            lock_guard lock(m_answersMutex);
             m_answers.insert(m_currentWord);
         }
 

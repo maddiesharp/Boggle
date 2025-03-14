@@ -21,7 +21,7 @@
     <ClCompile Include="Dictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IndexSolver.cpp">
+    <ClCompile Include="BoggleSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ThreadPool.cpp">
@@ -29,10 +29,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IndexSolverHelper.h">
+    <ClInclude Include="BoggleSolverHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IndexSolver.h">
+    <ClInclude Include="BoggleSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dictionary.h">

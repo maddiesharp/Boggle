@@ -72,8 +72,8 @@
 #include <memory>
 
 #include "BoggleBoard.h"
+#include "BoggleSolver.h"
 #include "Dictionary.h"
-#include "IndexSolver.h"
 #include "ThreadPool.h"
 
 #define METRICS
@@ -100,7 +100,8 @@ int main(const int argc, const char* const argv[])
     auto startTime{ chrono::high_resolution_clock::now() };
 #endif
 
-    auto threadPool{ ThreadPool() };
+    constexpr size_t MAX_NUM_THREADS{ 4 };
+    auto threadPool{ make_shared<ThreadPool>(MAX_NUM_THREADS) };
 
 
     // IMPORT DICTIONARY -------------------------------------------------------
@@ -134,45 +135,9 @@ int main(const int argc, const char* const argv[])
 #endif
 
     // SOLVE BOARD -------------------------------------------------------------
-    auto x = [&threadSafeDictionary, &board](size_t row, size_t col)
-    {
-        IndexSolver solver{ threadSafeDictionary, board };
-#ifdef _DEBUG
-        cout << "Boggling at row,col: " << row << "," << col << "\n";
-#endif
-        solver.findWords(row, col);
-    };
-
-    size_t rowIndex{ 0 };
-    size_t colIndex{ 0 };
-    for (const auto& row : board)
-    {
-        colIndex = 0;
-        for (const auto& col : row)
-        {
-            x(rowIndex, colIndex);
-            colIndex++;
-        }
-        rowIndex++;
-    }
-
-    //IndexSolver solver{ threadSafeDictionary, board };
-    //solver.findWords(0, 0);
-    //solver.findWords(0, 1);
-    //solver.findWords(0, 2);
-    //solver.findWords(0, 3);
-    //solver.findWords(1, 0);
-    //solver.findWords(1, 1);
-    //solver.findWords(1, 2);
-    //solver.findWords(1, 3);
-    //solver.findWords(2, 0);
-    //solver.findWords(2, 1);
-    //solver.findWords(2, 2);
-    //solver.findWords(2, 3);
-    //solver.findWords(3, 0);
-    //solver.findWords(3, 1);
-    //solver.findWords(3, 2);
-    //solver.findWords(3, 3);
+    auto solver{ BoggleSolver(threadSafeDictionary, threadPool, board) };
+    solver.solveBoard();
+    threadPool->waitForCompletion();
 
     // EXPORT SORTED ANSWERS ---------------------------------------------------
 
@@ -182,10 +147,10 @@ int main(const int argc, const char* const argv[])
 #if defined(_DEBUG) || defined(METRICS)
     auto endTime{ chrono::high_resolution_clock::now() };
     cout << "metrics: \n";
-    cout << "\tThread Pool Time: " << (importDictionaryTime - startTime).count() / 1000000.0f << "ms\n";
-    cout << "\tTrie Import Time: " << (importTrieEndTime - importDictionaryTime).count() / 1000000.0f << "ms\n";
-    cout << "\tSolver Time: " << (endTime - solverStartTime).count() / 1000000.0f << "ms\n";
-    cout << "\tTotal Time: " << (endTime - startTime).count() / 1000000.0f << "ms\n";
+    cout << /*"\tThread Pool Time: "  <<*/ (importDictionaryTime - startTime).count()           / 1000000.0f <</* "ms*/"\n";
+    cout << /*"\tTrie Import Time: "  <<*/ (importTrieEndTime - importDictionaryTime).count()   / 1000000.0f <</* "ms*/"\n";
+    cout << /*"\tSolver Time: "       <<*/ (endTime - solverStartTime).count()                  / 1000000.0f <</* "ms*/"\n";
+    cout << /*"\tTotal Time: "        <<*/ (endTime - startTime).count()                        / 1000000.0f <</* "ms*/"\n";
 #endif
 
     return 0;
