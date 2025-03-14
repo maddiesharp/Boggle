@@ -21,7 +21,7 @@ using namespace std;
 /// The IndexSolver class is built to solve all the words that can be made
 /// from a given started character node on the boggle board
 /// 
-/// TODO mode info
+/// TODO more info
 /// </summary>
 class IndexSolver
 {

@@ -95,7 +95,7 @@ int main(const int argc, const char* const argv[])
     const string boardPath      { argv[2] };
     const string outputPath     { argv[3] };
 
-    // IMPORT DICTIONARY -------------------------------------------------------
+    // CREATE THREAD POOL ------------------------------------------------------
 #if defined(_DEBUG) || defined(METRICS)
     auto startTime{ chrono::high_resolution_clock::now() };
 #endif
@@ -134,28 +134,51 @@ int main(const int argc, const char* const argv[])
 #endif
 
     // SOLVE BOARD -------------------------------------------------------------
-    IndexSolver solver{ threadSafeDictionary, board };
-    solver.findWords(0, 0);
-    solver.findWords(0, 1);
-    solver.findWords(0, 2);
-    solver.findWords(0, 3);
-    solver.findWords(1, 0);
-    solver.findWords(1, 1);
-    solver.findWords(1, 2);
-    solver.findWords(1, 3);
-    solver.findWords(2, 0);
-    solver.findWords(2, 1);
-    solver.findWords(2, 2);
-    solver.findWords(2, 3);
-    solver.findWords(3, 0);
-    solver.findWords(3, 1);
-    solver.findWords(3, 2);
-    solver.findWords(3, 3);
+    auto x = [&threadSafeDictionary, &board](size_t row, size_t col)
+    {
+        IndexSolver solver{ threadSafeDictionary, board };
+#ifdef _DEBUG
+        cout << "Boggling at row,col: " << row << "," << col << "\n";
+#endif
+        solver.findWords(row, col);
+    };
+
+    size_t rowIndex{ 0 };
+    size_t colIndex{ 0 };
+    for (const auto& row : board)
+    {
+        colIndex = 0;
+        for (const auto& col : row)
+        {
+            x(rowIndex, colIndex);
+            colIndex++;
+        }
+        rowIndex++;
+    }
+
+    //IndexSolver solver{ threadSafeDictionary, board };
+    //solver.findWords(0, 0);
+    //solver.findWords(0, 1);
+    //solver.findWords(0, 2);
+    //solver.findWords(0, 3);
+    //solver.findWords(1, 0);
+    //solver.findWords(1, 1);
+    //solver.findWords(1, 2);
+    //solver.findWords(1, 3);
+    //solver.findWords(2, 0);
+    //solver.findWords(2, 1);
+    //solver.findWords(2, 2);
+    //solver.findWords(2, 3);
+    //solver.findWords(3, 0);
+    //solver.findWords(3, 1);
+    //solver.findWords(3, 2);
+    //solver.findWords(3, 3);
 
     // EXPORT SORTED ANSWERS ---------------------------------------------------
 
 
 
+    // -------------------------------------------------------------------------
 #if defined(_DEBUG) || defined(METRICS)
     auto endTime{ chrono::high_resolution_clock::now() };
     cout << "metrics: \n";
@@ -164,7 +187,6 @@ int main(const int argc, const char* const argv[])
     cout << "\tSolver Time: " << (endTime - solverStartTime).count() / 1000000.0f << "ms\n";
     cout << "\tTotal Time: " << (endTime - startTime).count() / 1000000.0f << "ms\n";
 #endif
-
 
     return 0;
 }

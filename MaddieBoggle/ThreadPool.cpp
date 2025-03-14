@@ -2,8 +2,9 @@
 // Place Holder Copyright Header
 //
 
-#ifdef _DEBUG
 #include <cassert>
+
+#ifdef _DEBUG
 #include <iostream>
 #endif
 
