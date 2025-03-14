@@ -135,12 +135,14 @@
     <ClCompile Include="BoggleTest.cpp" />
     <ClCompile Include="Dictionary.cpp" />
     <ClCompile Include="IndexSolver.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoggleBoard.h" />
     <ClInclude Include="IndexSolverHelper.h" />
     <ClInclude Include="IndexSolver.h" />
     <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

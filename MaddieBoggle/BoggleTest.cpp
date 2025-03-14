@@ -74,6 +74,7 @@
 #include "BoggleBoard.h"
 #include "Dictionary.h"
 #include "IndexSolver.h"
+#include "ThreadPool.h"
 
 #define METRICS
 
@@ -83,7 +84,7 @@ using namespace std;
 
 int main(const int argc, const char* const argv[])
 {
-
+    // PROCESS CLI ARGS --------------------------------------------------------
     if (argc != 4)
     {
         std::cerr << "Usage: BoggleTest <dictionary_filename> <board_filename> <output_filename>" << std::endl;
@@ -94,73 +95,75 @@ int main(const int argc, const char* const argv[])
     const string boardPath      { argv[2] };
     const string outputPath     { argv[3] };
 
-
-    // extra scoping to see obj destructor logs before program end
-    { 
-        // IMPORT DICTIONARY -------------------------------------------------------
+    // IMPORT DICTIONARY -------------------------------------------------------
 #if defined(_DEBUG) || defined(METRICS)
-        auto startTime{ chrono::high_resolution_clock::now() };
+    auto startTime{ chrono::high_resolution_clock::now() };
 #endif
 
-        auto tempDictionary{ make_unique<Dictionary>() };
-        auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
-        if (errCode > 0)
-        {
-            return errCode;
-        }
-        shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
+    auto threadPool{ ThreadPool() };
 
 
+    // IMPORT DICTIONARY -------------------------------------------------------
 #if defined(_DEBUG) || defined(METRICS)
-        auto importTrieEndTime{ chrono::high_resolution_clock::now() };
+    auto importDictionaryTime{ chrono::high_resolution_clock::now() };
 #endif
 
-        // IMPORT BOARD ------------------------------------------------------------
-        BoggleBoard board{};
-        errCode = importBoard(boardPath, board);
-        if (errCode > 0)
-        {
-            return errCode;
-        }
-
-#if defined(_DEBUG) || defined(METRICS)
-        auto solverStartTime{ chrono::high_resolution_clock::now() };
-#endif
-
-        // SOLVE BOARD -------------------------------------------------------------
-        IndexSolver solver{ threadSafeDictionary, board };
-        solver.findWords(0, 0);
-        solver.findWords(0, 1);
-        solver.findWords(0, 2);
-        solver.findWords(0, 3);
-        solver.findWords(1, 0);
-        solver.findWords(1, 1);
-        solver.findWords(1, 2);
-        solver.findWords(1, 3);
-        solver.findWords(2, 0);
-        solver.findWords(2, 1);
-        solver.findWords(2, 2);
-        solver.findWords(2, 3);
-        solver.findWords(3, 0);
-        solver.findWords(3, 1);
-        solver.findWords(3, 2);
-        solver.findWords(3, 3);
-
-        // EXPORT SORTED ANSWERS ---------------------------------------------------
-
-
-
-#if defined(_DEBUG) || defined(METRICS)
-        auto endTime{ chrono::high_resolution_clock::now() };
-        cout << "metrics: \n";
-        cout << "\tTrie Import Time: " << (importTrieEndTime - startTime).count() / 1000000.0f << "ms\n";
-        cout << "\tSolver Time: " << (endTime - solverStartTime).count() / 1000000.0f << "ms\n";
-        cout << "\tTotal Time: " << (endTime - startTime).count() / 1000000.0f << "ms\n";
-#endif
+    auto tempDictionary{ make_unique<Dictionary>() };
+    auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
+    if (errCode > 0)
+    {
+        return errCode;
     }
-    // end extra scoping
+    shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
 
 
+#if defined(_DEBUG) || defined(METRICS)
+    auto importTrieEndTime{ chrono::high_resolution_clock::now() };
+#endif
+
+    // IMPORT BOARD ------------------------------------------------------------
+    BoggleBoard board{};
+    errCode = importBoard(boardPath, board);
+    if (errCode > 0)
+    {
+        return errCode;
+    }
+
+#if defined(_DEBUG) || defined(METRICS)
+    auto solverStartTime{ chrono::high_resolution_clock::now() };
+#endif
+
+    // SOLVE BOARD -------------------------------------------------------------
+    IndexSolver solver{ threadSafeDictionary, board };
+    solver.findWords(0, 0);
+    solver.findWords(0, 1);
+    solver.findWords(0, 2);
+    solver.findWords(0, 3);
+    solver.findWords(1, 0);
+    solver.findWords(1, 1);
+    solver.findWords(1, 2);
+    solver.findWords(1, 3);
+    solver.findWords(2, 0);
+    solver.findWords(2, 1);
+    solver.findWords(2, 2);
+    solver.findWords(2, 3);
+    solver.findWords(3, 0);
+    solver.findWords(3, 1);
+    solver.findWords(3, 2);
+    solver.findWords(3, 3);
+
+    // EXPORT SORTED ANSWERS ---------------------------------------------------
+
+
+
+#if defined(_DEBUG) || defined(METRICS)
+    auto endTime{ chrono::high_resolution_clock::now() };
+    cout << "metrics: \n";
+    cout << "\tThread Pool Time: " << (importDictionaryTime - startTime).count() / 1000000.0f << "ms\n";
+    cout << "\tTrie Import Time: " << (importTrieEndTime - importDictionaryTime).count() / 1000000.0f << "ms\n";
+    cout << "\tSolver Time: " << (endTime - solverStartTime).count() / 1000000.0f << "ms\n";
+    cout << "\tTotal Time: " << (endTime - startTime).count() / 1000000.0f << "ms\n";
+#endif
 
 
     return 0;
