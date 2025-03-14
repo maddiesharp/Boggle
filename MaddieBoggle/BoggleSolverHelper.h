@@ -13,7 +13,7 @@ using namespace std;
 
 /// <summary>
 ///    --------------------- Theory of Operation ---------------------
-/// The inline functions below are used by the IndexSolver class to check
+/// The inline functions below are used by the BoggleSolver class to check
 /// if adjacent nodes in the boggle table exist and are a valid node to
 /// traverse to.
 /// 

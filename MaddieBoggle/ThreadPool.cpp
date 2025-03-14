@@ -90,7 +90,7 @@ void ThreadPool::queueTask(function<void()> task)
 
 
 /// <summary>
-/// 
+/// When called, waits for all current tasks in the queue to finish.
 /// </summary>
 void ThreadPool::waitForCompletion()
 {
@@ -124,9 +124,9 @@ void ThreadPool::workerThread()
             m_tasks.pop();
         }
 
-//#ifdef _DEBUG
-//        cout << "Thread " << std::this_thread::get_id() << " started a task.\n";
-//#endif
+#ifdef _DEBUG
+        cout << "Thread " << std::this_thread::get_id() << " started a task.\n";
+#endif
         task();
 
         if (--m_activeTasks == 0) m_complete.notify_one();

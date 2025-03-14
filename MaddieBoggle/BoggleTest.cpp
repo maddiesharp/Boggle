@@ -137,12 +137,9 @@ int main(const int argc, const char* const argv[])
     auto solver{ BoggleSolver(threadSafeDictionary, threadPool, board) };
     solver.solveBoard();
     threadPool->waitForCompletion();
+    solver.exportAnswers(outputPath);
 
-    // EXPORT SORTED ANSWERS ---------------------------------------------------
-
-
-
-    // -------------------------------------------------------------------------
+    // MISC TIMING METRICS -----------------------------------------------------
 #if defined(_DEBUG) || defined(METRICS)
     auto endTime{ chrono::high_resolution_clock::now() };
     cout << "metrics (ms): \n";
