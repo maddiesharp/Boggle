@@ -124,9 +124,6 @@ void ThreadPool::workerThread()
             m_tasks.pop();
         }
 
-#ifdef _DEBUG
-        cout << "Thread " << std::this_thread::get_id() << " started a task.\n";
-#endif
         task();
 
         if (--m_activeTasks == 0) m_complete.notify_one();

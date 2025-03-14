@@ -123,7 +123,7 @@ void BoggleSolver::findWordsAtIndex(size_t row, size_t col)
     }
 
     // If the current word (which includes the chars in this iteration) is a valid dictionary path
-    if (m_dictionary->findPrefix(m_currentWord))
+    if (m_dictionary->searchDictionary(m_currentWord, SearchType::PATH))
     {
         // We are visting this node, add it to the set.
         m_visitedNodes.insert({ row, col });
@@ -148,7 +148,7 @@ void BoggleSolver::findWordsAtIndex(size_t row, size_t col)
         /* When we are done looking beyond the current node to any active nodes,
         check to see if this current word is a valid word in the dictionary. If
         it is, add it to the set of answers. */
-        if (m_dictionary->searchWord(m_currentWord))
+        if (m_dictionary->searchDictionary(m_currentWord, SearchType::WORD))
         {
             lock_guard lock(m_answersMutex);
             m_answers.insert(m_currentWord);

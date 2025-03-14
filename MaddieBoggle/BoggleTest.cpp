@@ -66,8 +66,7 @@
 //  This test file is confidential. No part of this document may be disclosed publicly 
 //  without prior written consent from ZeniMax Media, Inc.
 
-#include <chrono>
-#include <fstream>
+
 #include <iostream>
 #include <memory>
 
@@ -76,11 +75,14 @@
 #include "Dictionary.h"
 #include "ThreadPool.h"
 
-#define METRICS
-
 
 using namespace std;
+
+
+// This value was determined through various runtime metrics. See 
+// design documents folder for the metrics spreadsheet.
 constexpr size_t MAX_NUM_POOL_THREADS{ 4 };
+
 
 int main(const int argc, const char* const argv[])
 {
@@ -95,31 +97,21 @@ int main(const int argc, const char* const argv[])
     const string boardPath      { argv[2] };
     const string outputPath     { argv[3] };
 
-    // CREATE THREAD POOL ------------------------------------------------------
-#if defined(_DEBUG) || defined(METRICS)
-    auto startTime{ chrono::high_resolution_clock::now() };
-#endif
 
+    // CREATE THREAD POOL ------------------------------------------------------
     auto threadPool{ make_shared<ThreadPool>(MAX_NUM_POOL_THREADS) };
 
 
     // IMPORT DICTIONARY -------------------------------------------------------
-#if defined(_DEBUG) || defined(METRICS)
-    auto importDictionaryTime{ chrono::high_resolution_clock::now() };
-#endif
-
     auto tempDictionary{ make_unique<Dictionary>() };
     auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
     if (errCode > 0)
     {
         return errCode;
     }
+    /* Moving this to a pointer to a const object so it is thread safe. */
     shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
 
-
-#if defined(_DEBUG) || defined(METRICS)
-    auto importTrieEndTime{ chrono::high_resolution_clock::now() };
-#endif
 
     // IMPORT BOARD ------------------------------------------------------------
     BoggleBoard board{};
@@ -129,9 +121,6 @@ int main(const int argc, const char* const argv[])
         return errCode;
     }
 
-#if defined(_DEBUG) || defined(METRICS)
-    auto solverStartTime{ chrono::high_resolution_clock::now() };
-#endif
 
     // SOLVE BOARD -------------------------------------------------------------
     auto solver{ BoggleSolver(threadSafeDictionary, threadPool, board) };
@@ -139,16 +128,8 @@ int main(const int argc, const char* const argv[])
     threadPool->waitForCompletion();
     solver.exportAnswers(outputPath);
 
-    // MISC TIMING METRICS -----------------------------------------------------
-#if defined(_DEBUG) || defined(METRICS)
-    auto endTime{ chrono::high_resolution_clock::now() };
-    cout << "metrics (ms): \n";
-    cout << "\tThread Pool Time\t: "    << (importDictionaryTime - startTime).count()           / 1000000.0f << "\n";
-    cout << "\tTrie Import Time\t: "    << (importTrieEndTime - importDictionaryTime).count()   / 1000000.0f << "\n";
-    cout << "\tSolver Time\t\t: "       << (endTime - solverStartTime).count()                  / 1000000.0f << "\n";
-    cout << "\tTotal Time\t\t: "        << (endTime - startTime).count()                        / 1000000.0f << "\n";
-#endif
 
+    // -------------------------------------------------------------------------
     return 0;
 }
 
