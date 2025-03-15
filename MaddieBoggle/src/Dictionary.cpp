@@ -3,11 +3,8 @@
 //
 
 #include <fstream>
-#include <iostream>
-
-#ifdef _DEBUG
 #include <cassert>
-#endif
+#include <iostream>
 
 #include "Dictionary.h"
 
@@ -53,13 +50,14 @@ void Dictionary::insertWord(const string& word)
     for (const auto& letter : word)
     {
         /* If letter could not be found, then a node for it needs to be created. */
-        if (currentNode->m_childLetters.find(letter) == currentNode->m_childLetters.end())
+        if (currentNode->findChild(letter) == nullptr)
         {
-            currentNode->m_childLetters[letter] = new LetterNode();
+            //currentNode->m_childLetters[letter] = new LetterNode();
+            currentNode->insertChild(letter, new LetterNode());
         }
 
         // Move into the matching node to check for the next letter.
-        currentNode = currentNode->m_childLetters[letter];
+        currentNode = currentNode->findChild(letter);
     }
 
     // End of word insertion, set current node's word valid flag as true.
@@ -87,14 +85,14 @@ bool Dictionary::searchDictionary(const string& word, SearchType searchType) con
     {
         /* If letter could not be found, then we know this combo of 
         letters doesn't lead to a real word. We can return early. */
-        if (currentNode->m_childLetters.find(letter) == currentNode->m_childLetters.end())
+        if (currentNode->findChild(letter) == nullptr)
         {
             return false; // early return
         }
 
         /* If the early return did not happen, then the node for the
         next letter exists. */
-        currentNode = currentNode->m_childLetters[letter];
+        currentNode = currentNode->findChild(letter);
     }
 
     /* Return based on the search type. If we are still traversing the trie

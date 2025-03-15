@@ -2,10 +2,10 @@
 // Place Holder Copyright Header
 //
 
+#include <cassert>
 #include <fstream>
 
 #ifdef _DEBUG
-#include <cassert>
 #include <iostream>
 #endif
 
