@@ -23,6 +23,7 @@
     <ClInclude Include="includes\BoggleSolver.h" />
     <ClInclude Include="includes\BoggleSolverHelper.h" />
     <ClInclude Include="includes\Dictionary.h" />
+    <ClInclude Include="includes\LetterNodes.h" />
     <ClInclude Include="includes\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>

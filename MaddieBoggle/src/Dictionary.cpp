@@ -10,24 +10,15 @@
 
 
 /// <summary>
-/// Class constructor. Creates the starting root node.
+/// Class constructor. Creates the pool where all dictionary nodes will be allocated
+/// from. The root node of the dictionary is the first allocated node from the pool.
+/// <param name="word">Number of nodes to be allocated for in the node pool.</param>
 /// </summary>
-Dictionary::Dictionary() :
+Dictionary::Dictionary(size_t poolSize) :
+    m_pool(poolSize),
 	m_wordCount(0)
 {
-    m_root = new LetterNode(); // create root of the trie
-}
-
-
-/// <summary>
-/// Class destructor. Begins the destruction of all child nodes.
-/// </summary>
-Dictionary::~Dictionary()
-{
-	delete m_root; // begins the destruction of all child nodes
-#ifdef _DEBUG
-    cout << "\tnode count: " << nodeCount << "\n\tkill count: " << killCount << endl;
-#endif
+    m_root = m_pool.allocate(); // create root of the trie
 }
 
 
@@ -36,24 +27,33 @@ Dictionary::~Dictionary()
 /// of the word will have its node marked as 'true'. Returns early if
 /// word is too small to be valid or is already in the dictionary, otherwise
 /// a word will be considered valid and inserted into the dictionary.
+/// 
+/// The follow error codes can be returned from here:
+/// 0 - success
+/// 3 - out of pool memory, dictionary too big
 /// </summary>
 /// <param name="word">String word to add to the dictionary trie data structure.</param>
-void Dictionary::insertWord(const string& word)
+/// <returns>error code indicating success status</returns>
+int Dictionary::insertWord(const string& word)
 {
     assert(m_root);
     assert(word.size() > 0);
 
     /* Return early if word is a duplicate OR word is too small. */
-    if (searchDictionary(word, SearchType::WORD) || (word.size() < m_minWordSize)) return;
+    if (searchDictionary(word, SearchType::WORD) || (word.size() < m_minWordSize)) return 0;
 
     auto currentNode{ m_root };
     for (const auto& letter : word)
     {
-        /* If letter could not be found, then a node for it needs to be created. */
+        /* If letter could not be found, then a node for it needs to be created.
+        If there is no more allocated space for a new node, end early and return
+        with error code. */
         if (currentNode->findChild(letter) == nullptr)
         {
-            //currentNode->m_childLetters[letter] = new LetterNode();
-            currentNode->insertChild(letter, new LetterNode());
+            auto child{ m_pool.allocate() };
+            if (child == nullptr) return 3; 
+
+            currentNode->insertChild(letter, child);
         }
 
         // Move into the matching node to check for the next letter.
@@ -66,6 +66,8 @@ void Dictionary::insertWord(const string& word)
 #ifdef _DEBUG
     m_wordCount++;
 #endif
+
+    return 0;
 }
 
 
@@ -115,6 +117,7 @@ bool Dictionary::searchDictionary(const string& word, SearchType searchType) con
 /// 1 --> unable to open file
 /// 2 --> unprecendented error saved by a try-catch block, error is not identified, 
 ///     so the callee should exit gracefully
+/// 3 --> out of allocatable nodes in the pool
 /// </summary>
 /// <param name="filepath">location of the dictionary file to import</param>
 /// <returns>error code</returns>
@@ -130,9 +133,11 @@ int Dictionary::importDictionary(const string& filepath)
         }
 
         string word{};
+        int errorCode;
         while (file >> word) // Import words line-by-line
         {
-            insertWord(word);
+            errorCode = insertWord(word);
+            if (errorCode > 0) { return errorCode; }
         }
 
         file.close();

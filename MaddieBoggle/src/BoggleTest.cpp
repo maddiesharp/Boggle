@@ -83,6 +83,10 @@ using namespace std;
 // design documents folder for the metrics spreadsheet.
 constexpr size_t MAX_NUM_POOL_THREADS{ 4 };
 
+// The provided test case uses 9910 nodes. Settings to 15k just in
+// case, since I don't know how this will be tested internally.
+constexpr size_t DEFAULT_NODE_POOL_SIZE{ 15000 };
+
 
 int main(const int argc, const char* const argv[])
 {
@@ -99,13 +103,13 @@ int main(const int argc, const char* const argv[])
         const string boardPath{ argv[2] };
         const string outputPath{ argv[3] };
 
-
         // CREATE THREAD POOL ------------------------------------------------------
         auto threadPool{ make_shared<ThreadPool>(MAX_NUM_POOL_THREADS) };
 
-
+        
         // IMPORT DICTIONARY -------------------------------------------------------
-        auto tempDictionary{ make_unique<Dictionary>() };
+        auto tempDictionary{ make_unique<Dictionary>(DEFAULT_NODE_POOL_SIZE) };
+        
         auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
         if (errCode > 0)
         {
