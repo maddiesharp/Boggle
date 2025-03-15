@@ -7,7 +7,8 @@
 
 #include <string>
 
-#include "LetterNodes.h"
+#include "LetterNode.h"
+#include "LetterNodePool.h"
 
 
 using namespace std;

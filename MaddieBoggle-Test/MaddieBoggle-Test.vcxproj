@@ -68,7 +68,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(SolutionDir)MaddieBoggle\$(IntDir)Dictionary.obj;$(SolutionDir)MaddieBoggle\$(IntDir)BoggleSolver.obj;$(SolutionDir)MaddieBoggle\$(IntDir)ThreadPool.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)MaddieBoggle\$(IntDir)Dictionary.obj;$(SolutionDir)MaddieBoggle\$(IntDir)BoggleSolver.obj;$(SolutionDir)MaddieBoggle\$(IntDir)ThreadPool.obj;$(SolutionDir)MaddieBoggle\$(IntDir)LetterNode.obj;$(SolutionDir)MaddieBoggle\$(IntDir)LetterNodePool.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -102,7 +102,7 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>$(SolutionDir)MaddieBoggle\$(IntDir)Dictionary.obj;$(SolutionDir)MaddieBoggle\$(IntDir)BoggleSolver.obj;$(SolutionDir)MaddieBoggle\$(IntDir)ThreadPool.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)MaddieBoggle\$(IntDir)Dictionary.obj;$(SolutionDir)MaddieBoggle\$(IntDir)BoggleSolver.obj;$(SolutionDir)MaddieBoggle\$(IntDir)ThreadPool.obj;$(SolutionDir)MaddieBoggle\$(IntDir)LetterNode.obj;$(SolutionDir)MaddieBoggle\$(IntDir)LetterNodePool.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

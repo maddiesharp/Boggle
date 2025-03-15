@@ -5,8 +5,7 @@ TEST(Dictionary_Tests, MissingFileHandledCorrectly)
 {
 	// Arrange
 	auto errorCode = 0;
-	size_t size = 15000;
-	auto dictionary = Dictionary(size);
+	auto dictionary = Dictionary(15000);
 	string filepath = "this/path/should/not/exist.txt";
 
 	// Act
