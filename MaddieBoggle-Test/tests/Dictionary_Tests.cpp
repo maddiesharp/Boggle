@@ -17,7 +17,7 @@ TEST(Dictionary_Tests, MissingFileHandledCorrectly)
 
 
 /*
-TEST(BoggleBoard_Tests, )
+TEST(Dictionary_Tests, )
 {
 	// Arrange
 

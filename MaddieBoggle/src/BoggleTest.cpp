@@ -86,48 +86,51 @@ constexpr size_t MAX_NUM_POOL_THREADS{ 4 };
 
 int main(const int argc, const char* const argv[])
 {
-    // PROCESS CLI ARGS --------------------------------------------------------
-    if (argc != 4)
+    // extra scoping for memory profiling
     {
-        std::cerr << "Usage: BoggleTest <dictionary_filename> <board_filename> <output_filename>" << std::endl;
-        return -1;
+        // PROCESS CLI ARGS --------------------------------------------------------
+        if (argc != 4)
+        {
+            std::cerr << "Usage: BoggleTest <dictionary_filename> <board_filename> <output_filename>" << std::endl;
+            return -1;
+        }
+
+        const string dictionaryPath{ argv[1] };
+        const string boardPath{ argv[2] };
+        const string outputPath{ argv[3] };
+
+
+        // CREATE THREAD POOL ------------------------------------------------------
+        auto threadPool{ make_shared<ThreadPool>(MAX_NUM_POOL_THREADS) };
+
+
+        // IMPORT DICTIONARY -------------------------------------------------------
+        auto tempDictionary{ make_unique<Dictionary>() };
+        auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
+        if (errCode > 0)
+        {
+            return errCode;
+        }
+        /* Moving this to a pointer to a const object so it is thread safe. */
+        shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
+
+
+        // IMPORT BOARD ------------------------------------------------------------
+        BoggleBoard board{};
+        errCode = importBoard(boardPath, board);
+        if (errCode > 0)
+        {
+            return errCode;
+        }
+
+
+        // SOLVE BOARD -------------------------------------------------------------
+        auto solver{ BoggleSolver(threadSafeDictionary, threadPool, board) };
+        solver.solveBoard();
+        threadPool->waitForCompletion();
+        solver.exportAnswers(outputPath);
     }
-
-    const string dictionaryPath { argv[1] };
-    const string boardPath      { argv[2] };
-    const string outputPath     { argv[3] };
-
-
-    // CREATE THREAD POOL ------------------------------------------------------
-    auto threadPool{ make_shared<ThreadPool>(MAX_NUM_POOL_THREADS) };
-
-
-    // IMPORT DICTIONARY -------------------------------------------------------
-    auto tempDictionary{ make_unique<Dictionary>() };
-    auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
-    if (errCode > 0)
-    {
-        return errCode;
-    }
-    /* Moving this to a pointer to a const object so it is thread safe. */
-    shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
-
-
-    // IMPORT BOARD ------------------------------------------------------------
-    BoggleBoard board{};
-    errCode = importBoard(boardPath, board);
-    if (errCode > 0)
-    {
-        return errCode;
-    }
-
-
-    // SOLVE BOARD -------------------------------------------------------------
-    auto solver{ BoggleSolver(threadSafeDictionary, threadPool, board) };
-    solver.solveBoard();
-    threadPool->waitForCompletion();
-    solver.exportAnswers(outputPath);
-
+    // end extra memory profiling scope
 
     // -------------------------------------------------------------------------
     return 0;
