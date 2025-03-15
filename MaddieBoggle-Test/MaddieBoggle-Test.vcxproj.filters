@@ -5,6 +5,9 @@
     <ClCompile Include="tests\BoggleBoard_Tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\Dictionary_Tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
