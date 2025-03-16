@@ -99,6 +99,8 @@ int main(const int argc, const char* const argv[])
             return -1;
         }
 
+        cout << "Maddie Boggle\n"; // sanity print
+
         const string dictionaryPath{ argv[1] };
         const string boardPath{ argv[2] };
         const string outputPath{ argv[3] };

@@ -32,15 +32,14 @@ public:
 };
 
 
-class BoggleSolver_Double : BoggleSolver
+class BoggleSolver_Double : public BoggleSolver
 {
 public:
 	BoggleSolver_Double(
 		shared_ptr<const Dictionary> dictionary,
 		shared_ptr<ThreadPool> threadPool,
 		const BoggleBoard& board
-	) :
-		BoggleSolver(dictionary, threadPool, board)
+	) : BoggleSolver(dictionary, threadPool, board)
 	{
 
 	}

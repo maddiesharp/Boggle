@@ -83,17 +83,16 @@ void BoggleSolver::exportAnswers(const string& filepath)
 /// a portion of the boggle board. The first call to this method takes a specific
 /// character index in the boggle board. This kicks off a recursive depth-first-search alg
 /// that keeps traversing all possible nodes. The following search rules are implemented:
-/// - node traversal is acyclic (not loop-backs, ie no touching visited nodes)
+/// - node traversal is acyclic (no loop-backs, ie no touching visited nodes)
 /// - if an adjacent node doesn't form a word prefix, there is no need to travel to
-///     to it since it could not possible form a word
+///     to it since it could not possibly form a word
 /// 
 /// This method only finds all the possible words given a single starting node on 
 /// the board. It will need to be run once for the total number of character nodes
-/// in the boggle board, since there are that many starting nodes to begin looking
-/// for words.
+/// in the boggle board.
 /// 
-/// Threads running this method will maintain their own volatile data (current word, valid
-/// nodes, visited nodes). As such, those fields are marked as "thread_local". The only
+/// Threads running this method will maintain their own volatile data (current word and
+/// visited nodes). As such, those fields are marked as "thread_local". The only
 /// shared data is the answer set, which is mutex protected.
 /// </summary>
 /// <param name="row">row index of a character node on the boggle board</param>
