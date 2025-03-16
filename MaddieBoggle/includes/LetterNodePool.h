@@ -21,7 +21,7 @@ public:
     LetterNode* allocate();
     void deallocate(LetterNode* node);
 
-private:
+protected:
     vector<LetterNode> m_pool;          // reserved memory
     vector<LetterNode*> m_freeNodes;    // contains pointers to all the reserved memory blocks that are available for allocation
 };

@@ -1,6 +1,8 @@
 
 #include "pch.h"
 
+#include "LetterNodePool_Double.h"
+
 TEST(Dictionary_Tests, MissingFileHandledCorrectly)
 {
 	// Arrange
