@@ -1,6 +1,8 @@
 
 #include "LetterNodePool.h"
 #include "Dictionary.h"
+#include "BoggleSolver.h"
+
 
 class LetterNodePool_Double : public LetterNodePool
 {
@@ -29,4 +31,21 @@ public:
 	LetterNodePool* getPoolRef()	{ return &m_pool; }
 };
 
+
+class BoggleSolver_Double : BoggleSolver
+{
+public:
+	BoggleSolver_Double(
+		shared_ptr<const Dictionary> dictionary,
+		shared_ptr<ThreadPool> threadPool,
+		const BoggleBoard& board
+	) :
+		BoggleSolver(dictionary, threadPool, board)
+	{
+
+	}
+
+	set<string>* getAnswers() { return &m_answers; }
+	void findWordsPassThrough(size_t row, size_t col) { findWordsAtIndex(row, col); }
+};
 

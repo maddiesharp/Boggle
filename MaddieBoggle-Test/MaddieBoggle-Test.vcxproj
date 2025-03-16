@@ -118,6 +118,7 @@
     </ClCompile>
     <ClCompile Include="tests\BoggleBoard_Tests.cpp" />
     <ClCompile Include="tests\BoggleSolverHelper_Tests.cpp" />
+    <ClCompile Include="tests\BoggleSolver_Tests.cpp" />
     <ClCompile Include="tests\Dictionary_Tests.cpp" />
     <ClCompile Include="tests\LetterNodePool_Tests.cpp" />
     <ClCompile Include="tests\LetterNode_Tests.cpp" />

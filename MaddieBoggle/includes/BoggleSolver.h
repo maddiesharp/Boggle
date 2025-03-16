@@ -27,10 +27,10 @@ using namespace std;
 /// 
 /// This type of architecture allows multiple threads to search for words at
 /// different indexes at the same time. In order to keep the board and dictionary
-/// thread-safe, they shared to this class in some constant form. 
+/// thread-safe, they are shared to this class in some constant form. 
 /// 
 /// Each of the search threads will keep track of their own data. The only risk of
-/// collisions is with the ORDERED set where all the threads will start valid found
+/// collisions is with the ORDERED set where all the threads will store found
 /// words. The set is protected with a mutex to prevent collisions.
 ///  
 /// After searching all the nodes on the board, this class can be instructed to 
@@ -54,6 +54,7 @@ public:
     using BoardNodes = unordered_set<pair<size_t, size_t>, PairHash>;
 
 protected:
+    set<string> m_answers;      // using set here because it automatically sorts string alphabetically
     void findWordsAtIndex(size_t row, size_t col);
 
 private:
@@ -62,7 +63,7 @@ private:
     shared_ptr<ThreadPool> m_pool;              // access to execution threads
     
     mutex m_answersMutex;       // mutex used to protect access to the combined set of found answers
-    set<string> m_answers;      // using set here because it automatically sorts string alphabetically
+    
 };
 
 

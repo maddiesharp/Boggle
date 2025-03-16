@@ -17,6 +17,9 @@
     <ClCompile Include="tests\BoggleSolverHelper_Tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\BoggleSolver_Tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
