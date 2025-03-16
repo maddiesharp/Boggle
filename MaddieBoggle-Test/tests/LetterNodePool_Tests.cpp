@@ -1,7 +1,7 @@
 
 #include "pch.h"
 
-#include "LetterNodePool_Double.h"
+#include "TestDoubles.h"
 
 TEST(LetterNodePool_Tests, PoolIsAllocatedToExpectedSize)
 {

@@ -111,9 +111,9 @@ int main(const int argc, const char* const argv[])
         auto tempDictionary{ make_unique<Dictionary>(DEFAULT_NODE_POOL_SIZE) };
         
         auto errCode{ tempDictionary->importDictionary(dictionaryPath) };
-        if (errCode > 0)
+        if (errCode != ErrorCode::SUCCESS)
         {
-            return errCode;
+            return static_cast<int>(errCode);
         }
         /* Moving this to a pointer to a const object so it is thread safe. */
         shared_ptr<const Dictionary> threadSafeDictionary{ move(tempDictionary) };
@@ -122,9 +122,9 @@ int main(const int argc, const char* const argv[])
         // IMPORT BOARD ------------------------------------------------------------
         BoggleBoard board{};
         errCode = importBoard(boardPath, board);
-        if (errCode > 0)
+        if (errCode != ErrorCode::SUCCESS)
         {
-            return errCode;
+            return static_cast<int>(errCode);
         }
 
 

@@ -4,7 +4,7 @@
 TEST(BoggleBoard_Tests, MissingFileHandledCorrectly) 
 {
 	// Arrange
-	auto errorCode = 0;
+	auto errorCode = ErrorCode::SUCCESS;
 	BoggleBoard board{};
 	string filepath = "this/path/should/not/exist.txt";
 
@@ -12,7 +12,7 @@ TEST(BoggleBoard_Tests, MissingFileHandledCorrectly)
 	errorCode = importBoard(filepath, board);
 
 	// Assert (expected, actual)
-	EXPECT_EQ(1, errorCode);
+	EXPECT_EQ(ErrorCode::FILE_NOT_FOUND, errorCode);
 }
 
 

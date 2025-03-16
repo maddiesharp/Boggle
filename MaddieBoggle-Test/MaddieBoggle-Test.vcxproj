@@ -106,7 +106,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="doubles\LetterNodePool_Double.h" />
+    <ClInclude Include="doubles\TestDoubles.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +117,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="tests\BoggleBoard_Tests.cpp" />
+    <ClCompile Include="tests\BoggleSolverHelper_Tests.cpp" />
     <ClCompile Include="tests\Dictionary_Tests.cpp" />
     <ClCompile Include="tests\LetterNodePool_Tests.cpp" />
     <ClCompile Include="tests\LetterNode_Tests.cpp" />

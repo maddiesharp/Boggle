@@ -7,6 +7,7 @@
 
 #include <string>
 
+#include "ErrorCodes.h"
 #include "LetterNode.h"
 #include "LetterNodePool.h"
 
@@ -51,15 +52,17 @@ class Dictionary
 public:
     Dictionary(size_t poolSize);
 
-    int importDictionary(const string& filepath);
-    int insertWord(const string& word);
+    ErrorCode importDictionary(const string& filepath);
+    ErrorCode insertWord(const string& word);
     bool searchDictionary(const string& word, SearchType searchType) const;
+
+protected:
+    LetterNode* m_root;         // root node for the trie
+    LetterNodePool m_pool;
 
 private:
     static constexpr size_t m_minWordSize{ 3 };
     size_t m_wordCount;         // number of words imported
-    LetterNode* m_root;         // root node for the trie
-    LetterNodePool m_pool;
 };
 
 

@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "ErrorCodes.h"
+
 
 using namespace std;
 using BoggleBoard = vector<vector<char>>; // alias for 2d data structure to store boggle characters
@@ -33,8 +35,8 @@ using BoggleBoard = vector<vector<char>>; // alias for 2d data structure to stor
 /// </summary>
 /// <param name="filepath">string filepath to load the boggle board from</param>
 /// <param name="board">vector of vector<char>& to load the board from the file into</param>
-/// <returns>integer error code (0 = success)</returns>
-static int importBoard(const string& filepath, BoggleBoard& board)
+/// <returns>enum class error code (0 = success)</returns>
+static ErrorCode importBoard(const string& filepath, BoggleBoard& board)
 {
     try
     {
@@ -42,7 +44,7 @@ static int importBoard(const string& filepath, BoggleBoard& board)
         if (!file)
         {
             cerr << "Error finding file at path: " << filepath << ".\n";
-            return 1;
+            return ErrorCode::FILE_NOT_FOUND;
         }
        
         string line{};
@@ -68,12 +70,12 @@ static int importBoard(const string& filepath, BoggleBoard& board)
         }
 
         file.close();
-        return 0;
+        return ErrorCode::SUCCESS;
     }
     catch (...)
     {
         cerr << "Unexpected error when importing board file!\n";
-        return 2;
+        return ErrorCode::UNKNOWN_FILE_ERR;
     }
 }
 

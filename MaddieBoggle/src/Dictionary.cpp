@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Dictionary.h"
+#include "ErrorCodes.h"
 
 
 /// <summary>
@@ -33,14 +34,14 @@ Dictionary::Dictionary(size_t poolSize) :
 /// 3 - out of pool memory, dictionary too big
 /// </summary>
 /// <param name="word">String word to add to the dictionary trie data structure.</param>
-/// <returns>error code indicating success status</returns>
-int Dictionary::insertWord(const string& word)
+/// <returns>enum class error code indicating success status</returns>
+ErrorCode Dictionary::insertWord(const string& word)
 {
     assert(m_root);
     assert(word.size() > 0);
 
     /* Return early if word is a duplicate OR word is too small. */
-    if (searchDictionary(word, SearchType::WORD) || (word.size() < m_minWordSize)) return 0;
+    if (searchDictionary(word, SearchType::WORD) || (word.size() < m_minWordSize)) return ErrorCode::SUCCESS;
 
     auto currentNode{ m_root };
     for (const auto& letter : word)
@@ -51,7 +52,7 @@ int Dictionary::insertWord(const string& word)
         if (currentNode->findChild(letter) == nullptr)
         {
             auto child{ m_pool.allocate() };
-            if (child == nullptr) return 3; 
+            if (child == nullptr) return ErrorCode::OUT_OF_POOL_SPACE; 
 
             currentNode->insertChild(letter, child);
         }
@@ -67,7 +68,7 @@ int Dictionary::insertWord(const string& word)
     m_wordCount++;
 #endif
 
-    return 0;
+    return ErrorCode::SUCCESS;
 }
 
 
@@ -121,7 +122,7 @@ bool Dictionary::searchDictionary(const string& word, SearchType searchType) con
 /// </summary>
 /// <param name="filepath">location of the dictionary file to import</param>
 /// <returns>error code</returns>
-int Dictionary::importDictionary(const string& filepath)
+ErrorCode Dictionary::importDictionary(const string& filepath)
 {
     try
     {
@@ -129,26 +130,26 @@ int Dictionary::importDictionary(const string& filepath)
         if (!file)
         {
             cerr << "Error finding file at path: " << filepath << ".\n";
-            return 1;
+            return ErrorCode::FILE_NOT_FOUND;
         }
 
         string word{};
-        int errorCode;
+        ErrorCode errorCode;
         while (file >> word) // Import words line-by-line
         {
             errorCode = insertWord(word);
-            if (errorCode > 0) { return errorCode; }
+            if (errorCode != ErrorCode::SUCCESS) { return errorCode; }
         }
 
         file.close();
 #ifdef _DEBUG
         cout << "Imported word count: " << m_wordCount << "\n";
 #endif
-        return 0;
+        return ErrorCode::SUCCESS;
     }
     catch (...)
     {
         cerr << "Unexpected error when importing dictionary file!\n";
-        return 2;
+        return ErrorCode::SUCCESS;
     }
 }

@@ -14,10 +14,13 @@
     <ClCompile Include="tests\LetterNodePool_Tests.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="tests\BoggleSolverHelper_Tests.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="doubles\LetterNodePool_Double.h">
+    <ClInclude Include="doubles\TestDoubles.h">
       <Filter>doubles</Filter>
     </ClInclude>
   </ItemGroup>
