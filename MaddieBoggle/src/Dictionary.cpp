@@ -150,6 +150,6 @@ ErrorCode Dictionary::importDictionary(const string& filepath)
     catch (...)
     {
         cerr << "Unexpected error when importing dictionary file!\n";
-        return ErrorCode::SUCCESS;
+        return ErrorCode::UNKNOWN_FILE_ERR;
     }
 }
