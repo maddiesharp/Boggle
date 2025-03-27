@@ -8,6 +8,12 @@ Standard: ISO C++17 (/std:c++17)
 
 Target:   Windows x64
 
+## Future Improvements
+- run and resolve static analysis using current MISRA cpp standard
+- convert trie word dictionary into a patricia trie - condensing common prefixes, saving heap space
+- convert trie word dictionary into a dafsa trie - condensing common suffixes, saving heap space
+- wrap file io object to better unit file imports
+
 ## File Structure
 ```
 Boggle/
